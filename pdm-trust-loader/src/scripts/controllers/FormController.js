@@ -15,23 +15,36 @@ export default class FormController extends LocalizedController {
     getModel = () => ({});
 
     constructor(element, history) {
+        // this.element or element in constructor is webc-modal for FromController
         super(element, history);
-        // let locale_key = this.model.page;
-        // if (!locale_key)
-        //     throw new Error("Missing fields info");
+
         let self = this;
         super.bindLocale(self, `.form`, true);
-        self._createModalForm(WebCardinal.translations.en['/'].form);
-        self.setModel(self.getModel());
+
+        // getting translations for this Controller
+        const formModel = self.translationModel.form;
+
+        // or using translate function
+        // const fromModel = this.translate('form');
+
+        self.setModel({
+            title: formModel.title,
+            buttons: formModel.buttons
+        });
+
+        // creates the modal
+        self._createModalForm(formModel);
+
         console.log("FormController initialized");
-        Object.entries(self.getModel().buttons).forEach(b => {
-            self.onTagClick(`try${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
+
+        Object.entries(formModel.buttons).forEach(b => {
+            self.onTagClick(`try-${b[0]}`, self._handleTry(`${b[0]}`).bind(self));
         });
 
         self.on('input-has-changed', self._handleErrorElement.bind(self));
     }
 
-    _handleTry(name){
+    _handleTry(name) {
         return function() {
             if (this.hasErrors())
                 return this.showErrorToast('There are errors in the form');
@@ -76,12 +89,12 @@ export default class FormController extends LocalizedController {
     }
 
     _defineElements(inputs){
-        let el, elName;
-        const content_div = this.element.querySelector("div.modal-content");
+        const contentElement = this.querySelector('div.modal-content');
+
         inputs.forEach(input => {
-            elName = this._defineIonInput(input.name, input.attributes);
-            el = document.createElement(elName);
-            content_div.append(el);
+            const elName = this._defineIonInput(input.name, input.attributes);
+            const element = document.createElement(elName);
+            contentElement.append(element);
         });
     }
 

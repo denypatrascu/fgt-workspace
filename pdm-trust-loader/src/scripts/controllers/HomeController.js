@@ -108,13 +108,12 @@ export default class HomeController extends LocalizedController {
         // this.showIonicModal("a-generic-configurable-modal", false, {page: "registration"});
         this.createWebcModal({
             template: "genericModal",
-            // autoShow: true,
+            controller: "FormController",
             disableBackdropClosing: true,
             disableFooter: true,
             disableHeader: true,
             disableExpanding: true,
             disableClosing: true,
-            disableCancelButton: true,
             expanded: false,
             centered: true
         });
